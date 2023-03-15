@@ -1,4 +1,7 @@
 {
+  "typeAcquisition": {
+    "include": ["jest"]
+  },
   "compilerOptions": {
     "target": "es5",
     "lib": [
