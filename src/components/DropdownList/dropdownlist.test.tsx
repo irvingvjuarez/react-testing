@@ -1,4 +1,5 @@
 import { render, fireEvent } from "@testing-library/react"
+import { DropdownListProps, DataItem } from "./type"
 import { DropdownList } from "./index"
 
 const items: DataItem[] = [
