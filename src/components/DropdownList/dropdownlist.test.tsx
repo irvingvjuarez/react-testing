@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react"
+import { render, fireEvent } from "@testing-library/react"
 import { DropdownList } from "./index"
 
 const items: DataItem[] = [
@@ -35,8 +35,8 @@ const makeSut = (props: Partial<DropdownListProps>) => {
     <DropdownList
       data={items}
       labels = {{
-        show: "Hide",
-        hide: "Show"
+        show: "Show",
+        hide: "Hide"
       }}
       onRemoveItem={handleRemoveItem}
     />
@@ -47,5 +47,20 @@ describe("<DropdownList />", () => {
   test("The dropdown should not be rendered at the beginning", () => {
     const { container } = makeSut({})
     expect(container.querySelector("ul")).not.toBeInTheDocument()
+  })
+
+  test("The dropdown should be visible after click", () => {
+    const { container, getByText } = makeSut({})
+    fireEvent.click(getByText(/Show/))
+
+    expect(container.querySelector("ul")).toBeInTheDocument()
+  })
+
+  test("The labels change after a click", () => {
+    const { getByText } = makeSut({})
+    expect(getByText(/Show/)).toBeInTheDocument()
+    fireEvent.click(getByText(/Show/))
+
+    expect(getByText(/Hide/)).toBeInTheDocument()
   })
 })
