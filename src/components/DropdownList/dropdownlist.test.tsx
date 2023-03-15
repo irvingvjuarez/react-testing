@@ -2,43 +2,19 @@ import { render, fireEvent } from "@testing-library/react"
 import { DropdownList } from "./index"
 
 const items: DataItem[] = [
-  {
-    value: "11",
-    label: "First Item"
-  },
-  {
-    value: "12",
-    label: "Second Item"
-  },
-  {
-    value: "13",
-    label: "Third Item"
-  },
-  {
-    value: "14",
-    label: "Fourth Item"
-  }
+  { value: "1", label: "Item 1" },
+  { value: "2", label: "Item 2" },
+  { value: "3", label: "Item 3" },
 ]
 
-const handleRemoveItem = (item: DataItem, index: number) => {
-  const itemExists = items.findIndex(i => i.value === item.value)
-  if (itemExists >= 0) {
-    const chosenIndex = items.splice(index, 1)[0]
-    return chosenIndex
-  }
-  
-  return null
-}
+const labels = { show: "Show", hide: "Hide" }
 
 const makeSut = (props: Partial<DropdownListProps>) => {
   return render(
     <DropdownList
       data={items}
-      labels = {{
-        show: "Show",
-        hide: "Hide"
-      }}
-      onRemoveItem={handleRemoveItem}
+      labels = {labels}
+      onRemoveItem={jest.fn()}
     />
   )
 }
@@ -51,16 +27,33 @@ describe("<DropdownList />", () => {
 
   test("The dropdown should be visible after click", () => {
     const { container, getByText } = makeSut({})
-    fireEvent.click(getByText(/Show/))
+    fireEvent.click(getByText(labels.show))
 
     expect(container.querySelector("ul")).toBeInTheDocument()
   })
 
   test("The labels change after a click", () => {
     const { getByText } = makeSut({})
-    expect(getByText(/Show/)).toBeInTheDocument()
-    fireEvent.click(getByText(/Show/))
+    expect(getByText(labels.show)).toBeInTheDocument()
+    fireEvent.click(getByText(labels.show))
 
-    expect(getByText(/Hide/)).toBeInTheDocument()
+    expect(getByText(labels.hide)).toBeInTheDocument()
   })
+
+  test("It should render 4 items correctly", () => {
+    const { container, getByText } = makeSut({})
+    fireEvent.click(getByText(labels.show))
+
+    expect(container.querySelectorAll("li").length).toBe(items.length)
+  })
+
+  // test("It should call handleRemoveItem with the correct params", () => {
+  //   const handleRemoveItem = jest.fn()
+  //   const { getByText, getAllByText } = makeSut({})
+
+  //   fireEvent.click(getByText(labels.show))
+  //   fireEvent.click(getAllByText(/Remove/)[2])
+
+  //   expect(handleRemoveItem).toHaveBeenCalledWith(items[2], 2)
+  // })
 })
